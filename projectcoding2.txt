@@ -1,0 +1,132 @@
+// 라이브러리 해더
+#include <SPI.h>
+#include <MFRC522.h>
+#include <SoftwareSerial.h>
+// SS(Chip Select)과 RST(Reset) 핀 설정
+// 나머지 PIN은 SPI 라이브러리를 사용하기에 별도의 설정이 필요없다.
+
+#define SS_PIN 10
+#define RST_PIN 9
+
+// 라이브러리 생성
+MFRC522 rfid(SS_PIN, RST_PIN);
+MFRC522::MIFARE_Key key; 
+
+SoftwareSerial BTSerial(2, 3); 
+
+//카드 값 설정 
+byte circle[4] = {229,20,86,190};
+byte card[4] = {197,60,013,28};
+//모터 설정
+int motor1 = 5;
+int motor2 = 6;
+
+void AAA(){
+  byte num = random(3);
+  Serial.println(num);
+  switch (num){
+    case 0:
+      digitalWrite(motor1,HIGH);
+      digitalWrite(motor2,LOW);
+      analogWrite(motor1,255);
+      delay(15000);
+      break;
+    case 1:
+      digitalWrite(motor1,LOW);
+      digitalWrite(motor2,HIGH);
+      analogWrite(motor2,255);
+      delay(15000);
+      break;
+    case 2:
+      digitalWrite(motor1,HIGH);
+      digitalWrite(motor2,HIGH);
+      analogWrite(motor1,255);
+      analogWrite(motor2,255);
+      delay(7500);
+      break;
+    }
+}
+void printDec(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(buffer[i], DEC);
+  }
+}
+void setup() { 
+  pinMode(motor1,OUTPUT);
+  pinMode(motor2,OUTPUT);
+  Serial.begin(9600);
+  BTSerial.begin(9600);
+  SPI.begin(); // SPI 시작
+  rfid.PCD_Init(); // RFID 시작
+  for (byte i = 0; i < 6; i++) {
+    key.keyByte[i] = 0xFF; //초기 키 ID 초기화
+  }
+
+  Serial.println(F("This code scan the MIFARE Classsic NUID."));
+}
+ 
+void loop() {
+  digitalWrite(motor1,LOW);
+  digitalWrite(motor2,LOW);
+  
+  //블루투스로 데이터가 오면 실행
+  if (BTSerial.available()){
+    //data에 블루투스로 넘어온 값을 저장
+    char data = BTSerial.read();
+    Serial.write(data);
+    Serial.println("");
+    
+    if(data == 'a'){
+      AAA();
+    }
+  }
+
+  //카드가 인식되었다면 다음으로 넘어가고 아니면 실행안하고 loop문 처음으로 이동
+  if ( ! rfid.PICC_IsNewCardPresent())
+    return;
+
+  //ID가 읽혀졌다면 다음으로 넘어가고 아니면 실행안하고 loop문 처음으로 이동
+  if ( ! rfid.PICC_ReadCardSerial())
+    return;
+
+  Serial.print(F("PICC type: "));
+  //카드의 타입을 읽는다.
+  MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
+  //모니터에 카드 타입을 출력
+  Serial.println(rfid.PICC_GetTypeName(piccType));
+
+  //Classic MIFARE 방식인지 확인하고 아니면 loop문 처음으로 이동
+  if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&  
+    piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
+    piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
+    Serial.println(F("Your tag is not of type MIFARE Classic."));
+    return;
+  }
+
+  //자판기에 저장된 값과 같으면 실행
+  if ((rfid.uid.uidByte[0] == circle[0] || 
+    rfid.uid.uidByte[1] == circle[1] || 
+    rfid.uid.uidByte[2] == circle[2] || 
+    rfid.uid.uidByte[3] == circle[3]) or
+    (rfid.uid.uidByte[0] == card[0] || 
+    rfid.uid.uidByte[1] == card[1] || 
+    rfid.uid.uidByte[2] == card[2] || 
+    rfid.uid.uidByte[3] == card[3]))
+    {
+    Serial.println(F("The NUID tag is:"));
+    Serial.println();
+    Serial.println(F("In dec: "));
+    printDec(rfid.uid.uidByte, rfid.uid.size);
+    Serial.println();
+    Serial.println("success");
+    Serial.println();
+    AAA();
+    }
+    
+  //PICC 종료
+  rfid.PICC_HaltA();
+
+  //암호화 종료
+  rfid.PCD_StopCrypto1();
+}
