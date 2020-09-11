@@ -1,7 +1,8 @@
 # RandomVendingMachine
 Arduino & Android & Bluetooth & RFID <br>
 - email address : jintea1202@gmail.com <br>
-- Demo Video : https://youtu.be/jVL5jR0zWbM
+- Demo Video App : https://youtu.be/cimUHhS2j7I
+- Demo Video RFID : https://youtu.be/zQOgyoGFqZ8
 - PPT : https://www.slideshare.net/slideshow/embed_code/key/4He1Gt7cIb9Xj1
 
 ## Introduction
