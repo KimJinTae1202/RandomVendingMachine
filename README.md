@@ -26,6 +26,22 @@ This project implements delivery services without face-to-face contact with the 
 - Android Developer : https://developer.android.com/?hl=ko
 
 ## PPT Screenshots
-<img width="700" src="https://user-images.githubusercontent.com/62741210/92698975-fed92680-f387-11ea-895c-697ceb8f9731.PNG">
+<img width="700" src="https://user-images.githubusercontent.com/62741210/92917888-db86a800-f469-11ea-8596-d9ffc318be65.PNG">
+<img width="700" src="https://user-images.githubusercontent.com/62741210/92917890-dc1f3e80-f469-11ea-8964-e6765ee69d4e.PNG">
+<img width="700" src="https://user-images.githubusercontent.com/62741210/92917892-dc1f3e80-f469-11ea-95c5-314c168b3b9e.PNG">
+<img width="700" src="https://user-images.githubusercontent.com/62741210/92917894-dcb7d500-f469-11ea-882c-6e16dafeb9d0.PNG">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
+<img width="700" src="">
 
 
